@@ -1,0 +1,517 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard · Seshadripuram College</title>
+  <link rel="stylesheet" href="{% static 'css/college.css' %}">
+  <link rel="stylesheet" href="{% static 'css/subjects.css' %}">
+  <link rel="stylesheet" href="{% static 'css/faculty-directory.css' %}">
+</head>
+<body class="custom-cursor-active">
+  <!-- FX Canvas for Non-Blocking Cosmic Particles & Rocket Cursor -->
+  <canvas id="fx-canvas"></canvas>
+
+  <!-- Screen Shake Wrapper -->
+  <div id="shake-wrapper">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="app-shell">
+      <aside class="sidebar glass" data-no-fx="true">
+        <a class="brand" href="{% url dashboard_url %}">
+          <img class="college-logo" src="https://www.spmcollege.ac.in/mcom/images/index.webp" alt="">
+          <span><b>Seshadripuram</b><small>COLLEGE · BENGALURU</small></span>
+        </a>
+        <div class="nav-label">WORKSPACE</div>
+        <a class="nav-item active" href="{% url dashboard_url %}">◈ <span>{% if is_hod %}HOD Dashboard{% elif is_faculty %}My Dashboard{% else %}Overview{% endif %}</span></a>
+        <a class="nav-item" href="{% url 'faculty-directory' %}">♙ <span>Faculty directory</span></a>
+        {% if request.user.role == "STUDENT" %}<a class="nav-item" href="#institution">▦ <span>Institution</span></a>{% endif %}
+        <a class="nav-item" href="#subjects">▤ <span>{% if is_faculty %}My Subjects{% else %}Subjects{% endif %}</span></a>
+        {% if can_manage_academic_records %}
+          <a class="nav-item" href="/admin/academics/student/">◎ <span>Students</span></a>
+          <a class="nav-item" href="/admin/academics/faculty/">♙ <span>Faculty</span></a>
+          <a class="nav-item" href="/admin/academics/department/">▦ <span>Departments</span></a>
+          <a class="nav-item" href="/admin/academics/auditlog/">▤ <span>Audit history</span></a>
+        {% elif is_hod %}
+          <a class="nav-item" href="{% url 'managed-students' %}">◎ <span>Department students</span></a>
+          <a class="nav-item" href="/admin/academics/faculty/">♙ <span>Department faculty</span></a>
+          <a class="nav-item" href="/admin/academics/subject/">▤ <span>Department subjects</span></a>
+          <a class="nav-item" href="/admin/academics/auditlog/">◷ <span>Audit history</span></a>
+        {% elif request.user.role == "FACULTY" %}
+          <a class="nav-item" href="{% url 'managed-students' %}">◎ <span>My Students</span></a>
+          <a class="nav-item" href="/admin/academics/subject/">✧ <span>My Subjects</span></a>
+        {% endif %}
+        <a class="nav-item" href="{% url 'password-change' %}">⚿ <span>Change password</span></a>
+        <div class="sidebar-bottom">
+          <div class="mini-profile">
+            <div class="avatar">{{ request.user.username|slice:":1"|upper }}</div>
+            <div>
+              <b>{{ request.user.get_full_name|default:request.user.username }}</b>
+              <small>{{ request.user.get_role_display }}</small>
+            </div>
+          </div>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="logout-btn" type="submit">↪ Sign out</button>
+          </form>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div>
+            <span class="eyebrow">{% if is_hod %}ACADEMIC OPERATIONS / HOD{% elif is_faculty %}ACADEMIC OPERATIONS / FACULTY{% elif request.user.role == "STUDENT" %}ACADEMIC OPERATIONS / STUDENT{% else %}ACADEMIC OPERATIONS / SUPER ADMIN{% endif %}</span>
+            <h2>{% if is_hod %}Department overview, <em>in focus.</em>{% elif is_faculty %}Your teaching workspace, <em>in focus.</em>{% elif request.user.role == "STUDENT" %}Your academic records, <em>in focus.</em>{% else %}Your campus, <em>in focus.</em>{% endif %}</h2>
+          </div>
+          <div class="top-actions" data-no-fx="true">
+            <span class="status-pill" id="cosmic-fps-display"><i></i> System Online</span>
+            <div class="avatar">{{ request.user.username|slice:":1"|upper }}</div>
+          </div>
+        </header>
+
+        <section class="hero glass reveal">
+          <div class="hero-copy">
+            <span class="eyebrow">LEARN · EXCEL · GROW</span>
+            <h1>Good day, {{ request.user.first_name|default:request.user.username }}<span>.</span></h1>
+            <p>{% if is_hod %}Department-level students, faculty and subject assignments.{% elif is_faculty %}Your assigned subjects and the students in those classes.{% elif request.user.role == "STUDENT" %}Your own semester subjects and academic information.{% else %}Institutional workspace with real-time academic records and analytics.{% endif %}</p>
+            <div class="hero-tags">
+              <span>✦ Academic Year 2026-27</span>
+              <span>⌁ Bengaluru, India</span>
+              <span>● Live Database Records</span>
+            </div>
+          </div>
+          <div class="hero-orb">
+            <div class="orb-ring"></div>
+            <div class="cap">✦</div>
+          </div>
+        </section>
+
+        {% if principal_profile %}
+          <section class="leadership-card glass reveal">
+            {% if principal_profile.photograph_url %}
+              <img src="{{ principal_profile.photograph_url }}" alt="Official photograph of {{ principal_profile.full_name }}">
+            {% endif %}
+
+            <div>
+              <span class="eyebrow">INSTITUTIONAL LEADERSHIP</span>
+              <h2>{{ principal_profile.full_name }}</h2>
+              <p>{{ principal_profile.designation }} · {{ principal_profile.qualifications }}</p>
+              <small>{{ request.user.institution }}</small>
+            </div>
+          </section>
+        {% endif %}
+
+        {% if teacher_profile %}
+          <section class="leadership-card glass reveal">
+            {% if teacher_profile.directory_profile.photograph_url %}
+              <img src="{{ teacher_profile.directory_profile.photograph_url }}" alt="Profile photograph of {{ request.user.get_full_name }}">
+            {% endif %}
+            <div>
+              <span class="eyebrow">MY FACULTY PROFILE</span>
+              <h2>{{ request.user.get_full_name|default:request.user.username }}</h2>
+              <p>{{ teacher_profile.designation|default:"Faculty" }} · {{ teacher_profile.department.name }}</p>
+              <small>{{ teacher_profile.faculty_id }}</small>
+            </div>
+          </section>
+        {% endif %}
+
+        {% if is_hod and hod_departments %}
+          <section class="leadership-card glass reveal">
+            <div>
+              {% for department in hod_departments %}
+                <span class="eyebrow">{{ department.code }} · {{ department.get_department_type_display|default:"Academic department" }}</span>
+                <h2>{{ department.name }}</h2>
+                <p>Department Head · {{ hod_profile.user.get_full_name|default:request.user.get_full_name }}</p>
+                {% if department.official_reference %}
+                  <a class="text-link" href="{{ department.official_reference }}" target="_blank" rel="noopener noreferrer">Official department reference ↗</a>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </section>
+        {% endif %}
+
+        <!-- KPI Metrics Grid (Populated Directly from Backend Database Models) -->
+        <section class="stats-grid">
+          <article class="stat-card blue reveal">
+            <div class="stat-top"><span>ACTIVE STUDENTS</span><b>↗</b></div>
+            <strong data-count="{{ students_count }}">{{ students_count }}</strong>
+            <small>Active institutional records</small>
+            <div class="sparkline">▂ ▄ ▃ ▆ ▅ ▇ ▆</div>
+          </article>
+
+          <article class="stat-card violet reveal">
+            <div class="stat-top"><span>FACULTY MEMBERS</span><b>✧</b></div>
+            <strong data-count="{{ faculty_count }}">{{ faculty_count }}</strong>
+            <small>Configured faculty profiles</small>
+            <div class="sparkline">▃ ▅ ▄ ▆ ▅ ▇ ▆</div>
+          </article>
+
+          <article class="stat-card mint reveal">
+            <div class="stat-top"><span>DEPARTMENTS</span><b>▦</b></div>
+            <strong data-count="{{ departments_count }}">{{ departments_count }}</strong>
+            <small>Active academic units</small>
+            <div class="sparkline">▂ ▃ ▅ ▄ ▇ ▆ ▇</div>
+          </article>
+
+          <article class="stat-card amber reveal">
+            <div class="stat-top"><span>PROGRAMS</span><b>✦</b></div>
+            <strong data-count="{{ programs_count }}">{{ programs_count }}</strong>
+            <small>Configured degree programs</small>
+            <div class="sparkline">▃ ▄ ▅ ▃ ▆ ▇ ▆</div>
+          </article>
+        </section>
+
+        {% if is_hod %}
+          <section class="stats-grid role-stats">
+            <article class="stat-card blue reveal">
+              <div class="stat-top"><span>ACTIVE ACCOUNTS</span><b>●</b></div>
+              <strong>{{ account_counts.active }}</strong>
+              <small>Department students and teachers</small>
+            </article>
+            <article class="stat-card amber reveal">
+              <div class="stat-top"><span>INACTIVE ACCOUNTS</span><b>○</b></div>
+              <strong>{{ account_counts.inactive }}</strong>
+              <small>Department students and teachers</small>
+            </article>
+            <article class="stat-card violet reveal">
+              <div class="stat-top"><span>SUBJECTS</span><b>▤</b></div>
+              <strong>{{ subjects.count }}</strong>
+              <small>Department assignments</small>
+            </article>
+            <article class="stat-card mint reveal">
+              <div class="stat-top"><span>STUDENTS WITHOUT ACCOUNTS</span><b>◎</b></div>
+              <strong>0</strong>
+              <small>Student records require a linked login</small>
+            </article>
+          </section>
+          <section class="content-grid">
+            <article class="panel glass reveal">
+              <div class="panel-heading">
+                <div><span class="eyebrow">DEPARTMENT SCOPE</span><h3>Students by semester</h3></div>
+                <a class="text-link" href="{% url 'managed-students' %}">Manage students ↗</a>
+              </div>
+              {% if semester_student_data %}
+                <div class="bars">
+                  {% for row in semester_student_data %}
+                    <div class="bar-row">
+                      <span>{{ row.semester__program__code }} · Semester {{ row.semester__number }}</span>
+                      <div class="bar-track"><i style="--bar:{{ row.total }};"></i></div>
+                      <b>{{ row.total }}</b>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="empty-inline">No students are assigned to your department yet.</div>
+              {% endif %}
+            </article>
+            <article class="panel glass reveal">
+              <div class="panel-heading">
+                <div><span class="eyebrow">YOUR DEPARTMENT</span><h3>Faculty and assignments</h3></div>
+              </div>
+              <div class="role-list">
+                {% for member in hod_faculty %}
+                  <div>
+                    <b>{{ member.user.get_full_name|default:member.user.username }}</b>
+                    <span>{{ member.designation|default:"Faculty" }} · {{ member.subjects.count }} subjects</span>
+                    {% for subject in member.subjects.all %}
+                      <small>{{ subject.code }} · {{ subject.name }}</small>
+                    {% empty %}
+                      <small>No subject assignment</small>
+                    {% endfor %}
+                  </div>
+                {% empty %}
+                  <div class="empty-inline">No faculty profiles are assigned to your department.</div>
+                {% endfor %}
+              </div>
+            </article>
+            <article class="panel glass reveal">
+              <div class="panel-heading">
+                <div><span class="eyebrow">DEPARTMENT ACTIVITY</span><h3>Recent academic changes</h3></div>
+                <a class="text-link" href="/admin/academics/auditlog/">Audit history ↗</a>
+              </div>
+              <div class="role-list">
+                {% for entry in recent_activities %}
+                  <div><b>{{ entry.get_action_display }} · {{ entry.record_type }}</b><span>{{ entry.timestamp|date:"d M Y, H:i" }} · {{ entry.record_repr }}</span></div>
+                {% empty %}
+                  <div class="empty-inline">No recorded changes are available for this department.</div>
+                {% endfor %}
+              </div>
+            </article>
+          </section>
+        {% elif is_faculty %}
+          <section class="content-grid">
+            <article class="panel glass reveal">
+              <div class="panel-heading">
+                <div><span class="eyebrow">MY CLASSES</span><h3>Assigned student groups</h3></div>
+                <a class="text-link" href="{% url 'managed-students' %}">Manage students ↗</a>
+              </div>
+              <p class="role-summary"><strong>{{ teacher_students.count }}</strong> students across your assigned semesters.</p>
+              <div class="role-list">
+                {% for semester in teacher_semester_student_data %}
+                  <div><b>{{ semester.semester__program__code }} · Semester {{ semester.semester__number }}</b><span>{{ semester.total }} assigned students</span></div>
+                {% empty %}
+                  <div class="empty-inline">No subjects are assigned to this account yet.</div>
+                {% endfor %}
+              </div>
+            </article>
+            <article class="panel glass reveal">
+              <div class="panel-heading">
+                <div><span class="eyebrow">RECENT ACTIVITY</span><h3>My recent changes</h3></div>
+              </div>
+              <div class="role-list">
+                {% for entry in recent_activities %}
+                  <div><b>{{ entry.get_action_display }} · {{ entry.record_type }}</b><span>{{ entry.timestamp|date:"d M Y, H:i" }} · {{ entry.record_repr }}</span></div>
+                {% empty %}
+                  <div class="empty-inline">Your recorded academic actions will appear here.</div>
+                {% endfor %}
+              </div>
+            </article>
+          </section>
+        {% endif %}
+
+        <section class="panel glass reveal table-panel subject-panel" id="subjects">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">ACADEMIC RECORDS</span>
+              <h3>{% if request.user.role == "STUDENT" %}My Semester Subjects{% elif request.user.role == "FACULTY" %}My Assigned Subjects{% else %}Subjects{% endif %}</h3>
+            </div>
+            {% if can_manage_academic_records or is_hod %}
+              <a class="text-link" href="/admin/academics/subject/">Manage Subjects ↗</a>
+            {% endif %}
+          </div>
+          <div class="subject-controls">
+            <label>
+              <span class="sr-only">Search subjects</span>
+              <input class="subject-filter" id="subject-search" type="search" placeholder="Search code, subject or faculty">
+            </label>
+            <label>
+              <span class="sr-only">Filter by semester</span>
+              <select class="subject-filter" id="subject-semester-filter">
+                <option value="">All semesters</option>
+                {% for semester in subject_semesters %}
+                  <option value="{{ semester.semester_id }}">{{ semester.semester__program__code }} · Semester {{ semester.semester__number }}</option>
+                {% endfor %}
+              </select>
+            </label>
+          </div>
+          {% if subjects %}
+            <div class="table-wrap">
+              <table class="subject-table">
+                <thead>
+                  <tr>
+                    <th>SUBJECT</th>
+                    <th>CODE</th>
+                    <th>FACULTY</th>
+                    <th>SEMESTER</th>
+                    <th>CREDITS</th>
+                    <th>WEEKLY HOURS</th>
+                    {% if can_manage_academic_records or request.user.role == "FACULTY" %}<th></th>{% endif %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for subject in subjects %}
+                    <tr data-subject-row data-semester="{{ subject.semester_id }}" data-search="{{ subject.code|lower }} {{ subject.name|lower }} {% if subject.faculty %}{{ subject.faculty.user.get_full_name|default:subject.faculty.user.username|lower }}{% endif %}">
+                      <td><b>{{ subject.name }}</b><small class="subject-type">{{ subject.get_subject_type_display }}</small></td>
+                      <td>{{ subject.code }}</td>
+                      <td>{% if subject.faculty %}{{ subject.faculty.user.get_full_name|default:subject.faculty.user.username }}{% else %}Unassigned{% endif %}</td>
+                      <td>{{ subject.semester.program.code }} · Semester {{ subject.semester.number }}</td>
+                      <td>{{ subject.credits }}</td>
+                      <td>{{ subject.weekly_hours }}</td>
+                      {% if can_manage_academic_records or request.user.role == "FACULTY" %}
+                        <td><a class="text-link" href="{% url 'subject-edit' subject.pk %}">Edit ↗</a></td>
+                      {% endif %}
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="empty-inline">No subjects are assigned to this account or semester yet.</div>
+          {% endif %}
+        </section>
+
+        <section class="content-grid">
+          <article class="panel glass reveal">
+            <div class="panel-heading">
+              <div><span class="eyebrow">ACADEMIC SNAPSHOT</span><h3>Department Overview</h3></div>
+              <span class="chip">Live Data</span>
+            </div>
+            {% if department_data %}
+              <div class="bars">
+                {% for item in department_data %}
+                  <div class="bar-row">
+                    <span>{{ item.name }}</span>
+                    <div class="bar-track"><i style="--bar:{{ item.total|default:0 }};"></i></div>
+                    <b>{{ item.total }}</b>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="empty-state">
+                <div>✧</div>
+                <b>No Department Records Found</b>
+                <p>Run administrative setup or seed data to view institutional breakdown across departments.</p>
+                {% if can_manage_academic_records %}<a href="/admin/academics/department/add/">Add Department ↗</a>{% endif %}
+              </div>
+            {% endif %}
+          </article>
+
+          <article class="panel glass reveal" data-no-fx="true">
+            <div class="panel-heading">
+              <div><span class="eyebrow">QUICK ACCESS</span><h3>Academic Modules</h3></div>
+            </div>
+            <div class="quick-grid">
+              {% if can_manage_academic_records %}
+                <a href="/admin/academics/student/"><span class="quick-icon q-blue">◎</span><b>Students</b><small>Profiles &amp; Records</small></a>
+                <a href="/admin/academics/faculty/"><span class="quick-icon q-violet">♙</span><b>Faculty</b><small>Staff Directory</small></a>
+                <a href="/admin/academics/subject/"><span class="quick-icon q-mint">▤</span><b>Subjects</b><small>Courses &amp; Assignments</small></a>
+                <a href="/admin/"><span class="quick-icon q-amber">⚙</span><b>Administration</b><small>Academic management</small></a>
+              {% elif is_hod %}
+                <a href="{% url 'managed-students' %}"><span class="quick-icon q-blue">◎</span><b>Department Students</b><small>Manage assigned department</small></a>
+                <a href="/admin/academics/faculty/"><span class="quick-icon q-violet">♙</span><b>Department Faculty</b><small>Faculty profiles and status</small></a>
+                <a href="/admin/academics/subject/"><span class="quick-icon q-mint">▤</span><b>Subjects</b><small>Department assignments</small></a>
+                <a href="/admin/academics/auditlog/"><span class="quick-icon q-amber">◷</span><b>Audit History</b><small>Department academic changes</small></a>
+              {% elif request.user.role == "FACULTY" %}
+                <a href="/admin/academics/subject/"><span class="quick-icon q-mint">▤</span><b>My Subjects</b><small>Assigned courses</small></a>
+                <a href="{% url 'managed-students' %}"><span class="quick-icon q-blue">◎</span><b>My Students</b><small>Assigned classes only</small></a>
+              {% else %}
+                <a href="#subjects"><span class="quick-icon q-mint">▤</span><b>My Subjects</b><small>Semester courses</small></a>
+              {% endif %}
+            </div>
+          </article>
+        </section>
+
+        <section class="panel glass reveal table-panel">
+          <div class="panel-heading">
+            <div><span class="eyebrow">LATEST RECORDS</span><h3>Recently Enrolled Students</h3></div>
+            {% if can_manage_academic_records %}<a class="text-link" href="/admin/academics/student/">Manage Students ↗</a>{% elif is_hod or is_faculty %}<a class="text-link" href="{% url 'managed-students' %}">Manage Students ↗</a>{% endif %}
+          </div>
+          {% if recent_students %}
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>STUDENT</th>
+                    <th>ADMISSION NO.</th>
+                    <th>DEPARTMENT</th>
+                    <th>PROGRAMME</th>
+                    <th>STATUS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for s in recent_students %}
+                    <tr>
+                      <td><b>{{ s.user.get_full_name|default:s.user.username }}</b></td>
+                      <td>{{ s.admission_number }}</td>
+                      <td>{{ s.department.name }}</td>
+                      <td>{{ s.program.name }}</td>
+                      <td><span class="status-tag">{{ s.get_status_display }}</span></td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="empty-inline">
+              No student records found in active database. Enrolled students will display here with verified institutional status.
+            </div>
+          {% endif %}
+        </section>
+
+        <section class="institution-about panel glass reveal" id="institution">
+          <img src="https://www.spmcollege.ac.in/mcom/images/index.webp" alt="Seshadripuram Educational Trust logo">
+          <div>
+            <span class="eyebrow">ABOUT THE INSTITUTION</span>
+            <h3>Seshadripuram College</h3>
+            <p>Seshadripuram, Bengaluru, Karnataka, India · Permanently affiliated to Dr. Manmohan Singh Bengaluru City University.</p>
+            <div class="institutional-facts">
+              <span>NAAC A++ Accredited</span>
+              <span>ISO 9001:2015 Certified</span>
+              <a href="https://www.spmcollege.ac.in/" target="_blank" rel="noopener noreferrer">Official website ↗</a>
+            </div>
+          </div>
+        </section>
+
+        <footer class="footer">
+          <div class="institutional-footer">
+            <b>Seshadripuram College</b> · Seshadripuram, Bengaluru, Karnataka, India<br>
+            Permanently affiliated to Dr. Manmohan Singh Bengaluru City University · NAAC A++ Accredited · ISO 9001:2015 Certified
+            <a href="https://www.spmcollege.ac.in/" target="_blank" rel="noopener noreferrer">Official website ↗</a>
+          </div>
+          <span class="footer-right">Learn · Excel · Grow</span>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <!-- Quick Floating Controls Dock -->
+  <div class="cosmic-dock" data-no-fx="true" role="toolbar" aria-label="Cosmic FX Controls">
+    <button class="cosmic-dock-btn active" id="btn-toggle-smoke" aria-pressed="true">💨 Smoke</button>
+    <button class="cosmic-dock-btn active" id="btn-toggle-shake" aria-pressed="true">📳 Shake</button>
+    <button class="cosmic-dock-btn" id="btn-toggle-cursor" aria-pressed="false">🖱️ Cursor</button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="{% static 'js/college.js' %}"></script>
+  <script src="{% static 'js/cosmic-engine.js' %}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize Cosmic Engine
+      CosmicEngine.init({
+        canvasId: 'fx-canvas',
+        shakeId: 'shake-wrapper'
+      });
+
+      const subjectSearch = document.getElementById('subject-search');
+      const semesterFilter = document.getElementById('subject-semester-filter');
+      const subjectRows = document.querySelectorAll('[data-subject-row]');
+      const filterSubjects = () => {
+        const query = subjectSearch ? subjectSearch.value.trim().toLowerCase() : '';
+        const semester = semesterFilter ? semesterFilter.value : '';
+        subjectRows.forEach((row) => {
+          const matchesQuery = row.dataset.search.includes(query);
+          const matchesSemester = !semester || row.dataset.semester === semester;
+          row.hidden = !matchesQuery || !matchesSemester;
+        });
+      };
+      if (subjectSearch) subjectSearch.addEventListener('input', filterSubjects);
+      if (semesterFilter) semesterFilter.addEventListener('change', filterSubjects);
+
+      // Quick dock bindings
+      const btnSmoke = document.getElementById('btn-toggle-smoke');
+      if (btnSmoke) {
+        btnSmoke.addEventListener('click', (e) => {
+          e.stopPropagation();
+          CosmicEngine.CONFIG.ENABLE_SMOKE = !CosmicEngine.CONFIG.ENABLE_SMOKE;
+          btnSmoke.classList.toggle('active', CosmicEngine.CONFIG.ENABLE_SMOKE);
+          btnSmoke.setAttribute('aria-pressed', CosmicEngine.CONFIG.ENABLE_SMOKE);
+        });
+      }
+
+      const btnShake = document.getElementById('btn-toggle-shake');
+      if (btnShake) {
+        btnShake.addEventListener('click', (e) => {
+          e.stopPropagation();
+          CosmicEngine.CONFIG.ENABLE_SHAKE = !CosmicEngine.CONFIG.ENABLE_SHAKE;
+          btnShake.classList.toggle('active', CosmicEngine.CONFIG.ENABLE_SHAKE);
+          btnShake.setAttribute('aria-pressed', CosmicEngine.CONFIG.ENABLE_SHAKE);
+        });
+      }
+
+      const btnCursor = document.getElementById('btn-toggle-cursor');
+      if (btnCursor) {
+        btnCursor.addEventListener('click', (e) => {
+          e.stopPropagation();
+          CosmicEngine.CONFIG.ENABLE_CUSTOM_CURSOR = !CosmicEngine.CONFIG.ENABLE_CUSTOM_CURSOR;
+          const isCustom = CosmicEngine.CONFIG.ENABLE_CUSTOM_CURSOR;
+          document.body.classList.toggle('custom-cursor-active', isCustom);
+          document.body.classList.toggle('native-cursor-enabled', !isCustom);
+          btnCursor.classList.toggle('active', !isCustom);
+          btnCursor.setAttribute('aria-pressed', !isCustom);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

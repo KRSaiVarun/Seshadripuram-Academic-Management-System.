@@ -1,0 +1,56 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · Seshadripuram College</title>
+  <link rel="stylesheet" href="{% static 'css/college.css' %}">
+</head>
+<body class="login-page custom-cursor-active">
+  <!-- FX Canvas for Non-Blocking Cosmic Particles & Rocket Cursor -->
+  <canvas id="fx-canvas"></canvas>
+
+  <div id="shake-wrapper">
+    <div class="aurora"></div>
+    <main class="login-shell glass reveal" data-no-fx="true">
+      <a class="login-college-brand" href="https://www.spmcollege.ac.in/" target="_blank" rel="noopener noreferrer">
+        <img src="https://www.spmcollege.ac.in/mcom/images/index.webp" alt="Seshadripuram Educational Trust logo">
+        <span><b>Seshadripuram College</b><small>Seshadripuram · Bengaluru</small></span>
+      </a>
+      <p class="eyebrow">SESHADRIPURAM COLLEGE · BENGALURU</p>
+      <h1>Welcome back<span>.</span></h1>
+      <p class="muted">Sign in to your academic workspace</p>
+      <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="error" role="alert">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <label for="id_username">Username</label>
+        {{ form.username }}
+        {% for e in form.username.errors %}
+          <small class="error">{{ e }}</small>
+        {% endfor %}
+        <label for="id_password">Password</label>
+        {{ form.password }}
+        {% for e in form.password.errors %}
+          <small class="error">{{ e }}</small>
+        {% endfor %}
+        <button class="primary-btn" type="submit">Sign in <span>↗</span></button>
+      </form>
+      <p class="tiny"><a href="{% url 'faculty-directory' %}">Faculty directory</a> · Learn · Excel · Grow</p>
+    </main>
+  </div>
+
+  <script src="{% static 'js/college.js' %}"></script>
+  <script src="{% static 'js/cosmic-engine.js' %}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      CosmicEngine.init({
+        canvasId: 'fx-canvas',
+        shakeId: 'shake-wrapper'
+      });
+    });
+  </script>
+</body>
+</html>

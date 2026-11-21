@@ -1,0 +1,103 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Faculty Directory · Seshadripuram College</title>
+  <link rel="stylesheet" href="{% static 'css/college.css' %}">
+  <link rel="stylesheet" href="{% static 'css/faculty-directory.css' %}">
+</head>
+<body>
+  <main class="directory-shell">
+    <header class="directory-header glass">
+      <a class="directory-brand" href="/">
+        <img src="https://www.spmcollege.ac.in/mcom/images/index.webp" alt="Seshadripuram Educational Trust logo">
+        <span><b>Seshadripuram College</b><small>Seshadripuram · Bengaluru</small></span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a href="/">Dashboard</a>
+        <a href="https://www.spmcollege.ac.in/mcom/teaching-faculty" target="_blank" rel="noopener noreferrer">Official source ↗</a>
+      </nav>
+    </header>
+
+    <section class="directory-intro glass">
+      <span class="eyebrow">PG DEPARTMENT OF COMMERCE</span>
+      <h1>Faculty directory</h1>
+      <p>Verified public information from Seshadripuram College’s official teaching faculty page. Public profiles do not create or grant system login access.</p>
+      <div class="institutional-facts">
+        <span>NAAC A++ Accredited</span>
+        <span>Permanently affiliated to Dr. Manmohan Singh Bengaluru City University</span>
+        <span>ISO 9001:2015 Certified</span>
+      </div>
+    </section>
+
+    <form class="directory-filters glass" method="get">
+      <label>
+        <span>Search faculty</span>
+        <input type="search" name="q" value="{{ query }}" placeholder="Name, qualification or designation">
+      </label>
+      <label>
+        <span>Department</span>
+        <select name="department">
+          <option value="">All departments</option>
+          {% for item in departments %}
+            {% if item %}<option value="{{ item }}" {% if item == selected_department %}selected{% endif %}>{{ item }}</option>{% endif %}
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        <span>Designation</span>
+        <select name="designation">
+          <option value="">All designations</option>
+          {% for item in designations %}
+            {% if item %}<option value="{{ item }}" {% if item == selected_designation %}selected{% endif %}>{{ item }}</option>{% endif %}
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit">Filter</button>
+      <a class="clear-filters" href="{% url 'faculty-directory' %}">Clear</a>
+    </form>
+
+    <section class="faculty-grid" aria-label="Faculty profiles">
+      {% for profile in profiles %}
+        <article class="faculty-card glass">
+          {% if profile.photograph_url %}
+            <img class="faculty-photo" src="{{ profile.photograph_url }}" alt="Official photograph of {{ profile.full_name }}" loading="lazy">
+          {% else %}
+            <div class="faculty-avatar" aria-hidden="true">{{ profile.full_name|slice:":1"|upper }}</div>
+          {% endif %}
+          <div class="faculty-card-copy">
+            <span class="faculty-department">{{ profile.department_name|default:"Seshadripuram College" }}</span>
+            <h2>{{ profile.full_name }}</h2>
+            {% if profile.designation %}<p class="faculty-designation">{{ profile.designation }}</p>{% endif %}
+            {% if profile.qualifications %}<p><b>Qualifications</b><br>{{ profile.qualifications }}</p>{% endif %}
+            {% if profile.faculty and profile.faculty.subjects.exists %}
+              <p><b>Assigned subjects</b><br>
+                {% for subject in profile.faculty.subjects.all %}
+                  {{ subject.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+              </p>
+            {% endif %}
+            {% if profile.institutional_email %}<p><a href="mailto:{{ profile.institutional_email }}">{{ profile.institutional_email }}</a></p>{% endif %}
+            <a class="profile-link" href="{% url 'faculty-profile' profile.pk %}">View profile ↗</a>
+          </div>
+        </article>
+      {% empty %}
+        <div class="directory-empty glass">
+          <h2>No faculty profiles match those filters.</h2>
+          <p>Try a different search or clear the selected filters.</p>
+        </div>
+      {% endfor %}
+    </section>
+
+    <footer class="directory-footer">
+      <a href="https://www.spmcollege.ac.in/" target="_blank" rel="noopener noreferrer">Official college website</a>
+      <span>·</span>
+      <span>Information verified {{ profiles.0.verified_on|date:"j M Y"|default:"from the official directory" }}</span>
+      <span>·</span>
+      <span>Location: Seshadripuram, Bengaluru, Karnataka, India</span>
+    </footer>
+  </main>
+</body>
+</html>

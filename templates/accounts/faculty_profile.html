@@ -1,0 +1,59 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ profile.full_name }} · Faculty Directory</title>
+  <link rel="stylesheet" href="{% static 'css/college.css' %}">
+  <link rel="stylesheet" href="{% static 'css/faculty-directory.css' %}">
+</head>
+<body>
+  <main class="directory-shell">
+    <header class="directory-header glass">
+      <a class="directory-brand" href="{% url 'faculty-directory' %}">
+        <img src="https://www.spmcollege.ac.in/mcom/images/index.webp" alt="Seshadripuram Educational Trust logo">
+        <span><b>Seshadripuram College</b><small>Faculty directory</small></span>
+      </a>
+      <nav aria-label="Main navigation"><a href="{% url 'faculty-directory' %}">← All faculty</a></nav>
+    </header>
+    <article class="profile-detail glass">
+      {% if profile.photograph_url %}
+        <img class="profile-detail-photo" src="{{ profile.photograph_url }}" alt="Official photograph of {{ profile.full_name }}">
+      {% else %}
+        <div class="faculty-avatar profile-detail-avatar" aria-hidden="true">{{ profile.full_name|slice:":1"|upper }}</div>
+      {% endif %}
+      <div>
+        <span class="eyebrow">{{ profile.department_name|default:"Seshadripuram College" }}</span>
+        <h1>{{ profile.full_name }}</h1>
+        {% if profile.designation %}<p class="faculty-designation">{{ profile.designation }}</p>{% endif %}
+        {% if profile.qualifications %}<p><b>Qualifications</b><br>{{ profile.qualifications }}</p>{% endif %}
+        {% if profile.professional_profile %}<p>{{ profile.professional_profile|linebreaksbr }}</p>{% endif %}
+        {% if profile.institutional_email %}<p><b>Email:</b> <a href="mailto:{{ profile.institutional_email }}">{{ profile.institutional_email }}</a></p>{% endif %}
+        {% if profile.contact_number %}<p><b>Contact:</b> {{ profile.contact_number }}</p>{% endif %}
+        {% if profile.faculty %}
+          <h2>Assigned subjects</h2>
+          <ul>
+            {% for subject in profile.faculty.subjects.all %}
+              <li>{{ subject.code }} — {{ subject.name }} ({{ subject.semester.program.code }}, Semester {{ subject.semester.number }})</li>
+            {% empty %}
+              <li>No subject assignments are currently linked to this public profile.</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>Academic-system subject assignments are not linked to this public profile.</p>
+        {% endif %}
+        <p class="source-note">
+          Source: <a href="{{ profile.source_url }}" target="_blank" rel="noopener noreferrer">Official faculty directory ↗</a><br>
+          Verified {{ profile.verified_on|date:"j F Y" }} · Verified fields: {{ profile.verified_fields|join:", " }}
+        </p>
+      </div>
+    </article>
+    <footer class="directory-footer">
+      <span>NAAC A++ Accredited</span><span>·</span>
+      <span>ISO 9001:2015 Certified</span><span>·</span>
+      <span>Permanently affiliated to Dr. Manmohan Singh Bengaluru City University</span>
+    </footer>
+  </main>
+</body>
+</html>

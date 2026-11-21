@@ -1,0 +1,52 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} · Seshadripuram College</title>
+  <link rel="stylesheet" href="{% static 'css/college.css' %}">
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <div class="app-shell">
+    <aside class="sidebar glass">
+      <a class="brand" href="{% url 'dashboard' %}">
+        <img class="college-logo" src="https://www.spmcollege.ac.in/mcom/images/index.webp" alt="">
+        <span><b>Seshadripuram</b><small>COLLEGE · BENGALURU</small></span>
+      </a>
+      <div class="nav-label">WORKSPACE</div>
+      <a class="nav-item" href="{% url 'dashboard' %}">◈ <span>My Dashboard</span></a>
+      <a class="nav-item active" href="{% url 'managed-students' %}">◎ <span>Manage Students</span></a>
+    </aside>
+    <main class="main-area">
+      <header class="topbar">
+        <div><span class="eyebrow">ACADEMIC OPERATIONS / STUDENTS</span><h2>{{ title }}</h2></div>
+        <a class="text-link" href="{% url 'managed-students' %}">← Back to students</a>
+      </header>
+      <section class="panel glass">
+        <div class="eyebrow">ASSIGNED CLASS SCOPE</div>
+        {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+        <form method="post" class="managed-student-form">
+          {% csrf_token %}
+          {% for field in form %}
+            <label class="form-field" for="{{ field.id_for_label }}">
+              <span>{{ field.label }}{% if field.field.required %} *{% endif %}</span>
+              {{ field }}
+              {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+              {% if field.errors %}<small class="form-errors">{{ field.errors|join:", " }}</small>{% endif %}
+            </label>
+          {% endfor %}
+          {% if student %}
+            <label class="form-field" for="change_reason"><span>Reason for change</span><textarea class="field" id="change_reason" name="change_reason" rows="3"></textarea></label>
+          {% endif %}
+          <div class="form-actions">
+            <button class="action-btn" type="submit">Save student</button>
+            <a class="text-link" href="{% url 'managed-students' %}">Cancel</a>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edit {{ subject.code }} · Seshadripuram College</title>
+  <link rel="stylesheet" href="{% static 'css/college.css' %}">
+  <link rel="stylesheet" href="{% static 'css/subjects.css' %}">
+</head>
+<body class="subject-edit-page">
+  <main class="subject-edit-shell glass">
+    <span class="eyebrow">ACADEMIC RECORDS / SUBJECTS</span>
+    <h1>Edit subject</h1>
+    <p>Update subject details for {{ subject.semester.program.name }} · Semester {{ subject.semester.number }}.</p>
+    <form class="subject-edit-form" method="post">
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+      {% for field in form %}
+        <label for="{{ field.id_for_label }}">
+          {{ field.label }}
+          {{ field }}
+          {% if field.errors %}<span class="form-errors">{{ field.errors }}</span>{% endif %}
+        </label>
+      {% endfor %}
+      <div class="subject-edit-actions">
+        <button class="subject-save-btn" type="submit">Save subject</button>
+        <a class="subject-cancel-btn" href="{% url 'dashboard' %}">Cancel</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

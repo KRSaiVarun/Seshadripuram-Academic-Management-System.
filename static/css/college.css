@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--bg:#080b1c;--panel:rgba(21,28,59,.68);--line:rgba(177,190,255,.14);--text:#f4f5ff;--muted:#9ca7cc;--blue:#4f9dff;--violet:#a78bfa;--mint:#55e0c0;--amber:#ffbd69}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% 5%,#20235c 0,transparent 35%),radial-gradient(ellipse at 5% 90%,#18245a 0,transparent 35%),var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}a{color:inherit;text-decoration:none}.ambient{position:fixed;width:420px;height:420px;border-radius:50%;filter:blur(90px);opacity:.16;pointer-events:none;animation:drift 13s ease-in-out infinite alternate}.ambient-one{background:#6d4bff;top:-140px;right:10%}.ambient-two{background:#00bde8;bottom:-220px;left:18%;animation-delay:-5s}@keyframes drift{to{transform:translate(70px,50px) scale(1.2)}}.glass{background:linear-gradient(135deg,rgba(38,48,93,.72),rgba(14,19,43,.68));border:1px solid var(--line);box-shadow:0 18px 60px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.06);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}.app-shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px;max-width:1600px;margin:auto;padding:22px;position:relative}.sidebar{height:calc(100vh - 44px);min-height:700px;border-radius:24px;padding:22px 16px;display:flex;flex-direction:column;position:sticky;top:22px}.brand{display:flex;align-items:center;gap:12px;padding:4px 7px 28px}.brand b{display:block;font:800 14px Manrope}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:1.4px;margin-top:4px}.brand-mark{width:54px;height:54px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(140deg,#36c7ff,#684dff 55%,#df69d6);font:800 30px Manrope;color:white;box-shadow:0 8px 30px #6957ff55;border:1px solid #ffffff55}.brand-mark.small{width:42px;height:42px;border-radius:14px;font-size:23px}.nav-label,.eyebrow{font-size:9px;letter-spacing:1.7px;font-weight:700;color:#8794c4}.nav-label{padding:0 12px 12px}.nav-item{padding:12px 13px;border-radius:13px;color:#aeb8dc;display:flex;gap:13px;align-items:center;font-size:13px;margin:3px 0;transition:.25s}.nav-item:hover,.nav-item.active{background:linear-gradient(100deg,#5b50dc55,#2e8bff22);color:#fff;transform:translateX(4px);box-shadow:inset 2px 0 #9e8cff}.sidebar-bottom{margin-top:auto}.mini-profile{display:flex;gap:10px;align-items:center;padding:16px 6px;border-top:1px solid var(--line)}.mini-profile b{font-size:11px;display:block}.mini-profile small{color:var(--muted);font-size:10px}.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#35c7ff,#9b68ff);font-weight:800}.logout-btn{border:1px solid var(--line);background:#ffffff09;color:#c8d0f3;width:100%;padding:11px;border-radius:12px;cursor:pointer}.main-area{min-width:0}.topbar{display:flex;justify-content:space-between;align-items:center;padding:5px 2px 20px}.topbar h2{font:800 24px Manrope;margin:7px 0 0}.topbar h2 em{font-style:normal;color:#a99aff}.top-actions{display:flex;align-items:center;gap:15px}.status-pill,.chip{font-size:10px;color:#b9c7ee;border:1px solid var(--line);border-radius:30px;padding:8px 12px;background:#ffffff08}.status-pill i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#54e3b7;box-shadow:0 0 10px #54e3b7;margin-right:7px}.hero{min-height:190px;border-radius:24px;padding:30px 36px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;background:linear-gradient(110deg,rgba(48,57,136,.8),rgba(39,69,139,.46),rgba(100,57,149,.32))}.hero:after{content:'';position:absolute;width:300px;height:300px;border-radius:50%;right:7%;top:-170px;border:1px solid #ffffff24;box-shadow:0 0 0 25px #ffffff08,0 0 0 55px #ffffff05}.hero h1{font:800 clamp(26px,3vw,38px) Manrope;margin:12px 0 8px}.hero h1 span{color:#9e8cff}.hero p{color:#c0c9eb;margin:0;font-size:13px}.hero-tags{display:flex;gap:18px;margin-top:22px;color:#c9d3f5;font-size:10px}.hero-orb{width:128px;height:128px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#9deaff,#6977ff 45%,#7c3ecb 75%);box-shadow:0 0 55px #7a6dff80;display:grid;place-items:center;position:relative;z-index:1;animation:float 5s ease-in-out infinite}.hero-orb:before,.hero-orb:after{content:'';position:absolute;inset:-13px;border:1px solid #a8a4ff66;border-radius:50%;transform:rotateX(65deg)}.hero-orb:after{transform:rotateY(65deg)}.cap{font-size:42px;text-shadow:0 4px 20px #fff}@keyframes float{50%{transform:translateY(-10px) rotate(4deg)}}.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:17px 0}.stat-card{border:1px solid var(--line);border-radius:19px;padding:18px 20px;position:relative;overflow:hidden;transition:.3s;animation:rise .7s both}.stat-card:hover{transform:translateY(-5px);box-shadow:0 15px 35px #0005}.blue{background:linear-gradient(135deg,#164e9d99,#15234a99)}.violet{background:linear-gradient(135deg,#7144b899,#30265f99)}.mint{background:linear-gradient(135deg,#087d7899,#153f4d99)}.amber{background:linear-gradient(135deg,#a45b2699,#50332999)}.stat-top{display:flex;justify-content:space-between;color:#c3c9e7;font-size:9px;letter-spacing:1.2px;font-weight:700}.stat-top b{font-size:17px;color:#dce6ff}.stat-card strong{display:block;font:800 32px Manrope;margin:13px 0 2px}.stat-card small{color:#b8c4e7;font-size:10px}.sparkline{position:absolute;right:16px;bottom:12px;letter-spacing:3px;color:#ffffff45;font-size:17px}.content-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-bottom:14px}.panel{border-radius:20px;padding:21px;margin-bottom:14px}.panel-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.panel-heading h3{font:700 16px Manrope;margin:6px 0 0}.bars{display:grid;gap:16px;padding:10px 2px}.bar-row{display:grid;grid-template-columns:120px 1fr 28px;gap:12px;align-items:center;font-size:11px;color:#c3cbea}.bar-row b{text-align:right;color:#fff}.bar-track{height:8px;border-radius:20px;background:#ffffff12;overflow:hidden}.bar-track i{display:block;height:100%;width:0;border-radius:20px;background:linear-gradient(90deg,#4b9dff,#9d7cff,#53dfc4);animation:grow 1.4s .2s forwards;--target:75%}@keyframes grow{to{width:var(--target)}}.empty-state{text-align:center;padding:15px 25px 20px;color:var(--muted)}.empty-state div{font-size:34px;color:#a69aff}.empty-state b{display:block;color:#e9eaff;margin:8px}.empty-state p{font-size:11px;line-height:1.6}.empty-state a,.text-link{color:#9fbcff;font-size:11px}.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.quick-grid a{background:#ffffff08;border:1px solid var(--line);border-radius:14px;padding:13px;transition:.25s}.quick-grid a:hover{transform:translateY(-4px);background:#ffffff12}.quick-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;margin-bottom:10px;font-size:18px}.q-blue{background:#247fe755}.q-violet{background:#8b5cf655}.q-mint{background:#1bb99b55}.q-amber{background:#e9a23e55}.quick-grid b,.quick-grid small{display:block}.quick-grid b{font-size:11px}.quick-grid small{font-size:9px;color:var(--muted);margin-top:4px}.table-panel{margin-top:2px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;text-align:left;white-space:nowrap}th{font-size:9px;letter-spacing:1px;color:#8491bd;padding:12px;border-bottom:1px solid var(--line)}td{font-size:11px;color:#c8d0eb;padding:14px 12px;border-bottom:1px solid #ffffff0a}td b{color:#fff}.status-tag{padding:5px 9px;border-radius:30px;background:#2bc99b20;color:#68e6bd;font-size:9px}.empty-inline{padding:18px;color:var(--muted);font-size:12px}.footer{padding:15px 5px 5px;color:#7481aa;font-size:9px;letter-spacing:1.2px}.footer span{color:#a78bfa;margin:0 6px}.footer-right{float:right;letter-spacing:0}.reveal{animation:rise .65s both}@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}.login-page{display:grid;place-items:center;padding:20px}.login-shell{width:min(430px,100%);padding:42px;border-radius:28px;position:relative;z-index:1}.login-shell h1{font:800 32px Manrope;margin:12px 0 4px}.login-shell h1 span{color:#a78bfa}.muted{color:var(--muted);font-size:13px}.login-shell form{margin-top:28px}.login-shell label{display:block;font-size:11px;color:#c8d0eb;margin:15px 0 7px}.field{width:100%;padding:13px 14px;background:#080d25aa;border:1px solid var(--line);border-radius:12px;color:#fff;outline:none}.field:focus{border-color:#8b80ff;box-shadow:0 0 0 3px #8b80ff22}.primary-btn{width:100%;padding:14px;border:0;border-radius:13px;margin-top:22px;background:linear-gradient(100deg,#4b9cff,#8664f6,#bc63d8);color:white;font-weight:700;cursor:pointer;box-shadow:0 10px 30px #775eff44;transition:.25s}.primary-btn:hover{transform:translateY(-2px);filter:brightness(1.12)}.primary-btn span{float:right}.tiny{text-align:center;color:#a99cff;font-size:11px;margin-top:24px;letter-spacing:2px}.error{color:#ff9caa;font-size:11px}.aurora{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 40%,#4e3f9b55,transparent 45%);animation:pulse 7s infinite alternate}@keyframes pulse{to{opacity:.4;transform:scale(1.15)}}@media(max-width:1050px){.app-shell{grid-template-columns:210px 1fr;padding:14px;gap:14px}.stats-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:720px){.app-shell{display:block;padding:12px}.sidebar{position:relative;height:auto;min-height:0;margin-bottom:15px}.sidebar .nav-item{display:inline-flex;padding:9px}.sidebar-bottom{display:none}.brand{padding-bottom:12px}.nav-label{display:none}.topbar h2{font-size:20px}.hero{padding:23px}.hero-orb{width:75px;height:75px}.hero-tags{flex-wrap:wrap}.content-grid{grid-template-columns:1fr}.footer-right{display:none}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* ==========================================================================
+   SECTION 16: COSMIC GLASSMORPHISM & ROCKET PARTICLE SYSTEM STYLES
+   ========================================================================== */
+:root {
+  --bg-midnight: #080816;
+  --bg-royal-blue: #101B63;
+  --electric-blue: #087BFF;
+  --neon-purple: #7900FF;
+  --violet: #A855F7;
+  --cyan: #00E5FF;
+  --hot-pink: #FF2DAA;
+  --magenta: #D500F9;
+  --orange: #FF8A00;
+  --emerald: #00D084;
+  --gold: #FFD700;
+}
+
+#fx-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  display: block;
+}
+
+#shake-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+@media (pointer: fine) {
+  body.custom-cursor-active,
+  body.custom-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+body.native-cursor-enabled,
+body.native-cursor-enabled * {
+  cursor: auto !important;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--cyan) !important;
+  outline-offset: 3px !important;
+}
+
+/* Floating Controls Dock for Django Views */
+.cosmic-dock {
+  position: fixed;
+  bottom: 1.2rem;
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.85rem;
+  background: rgba(12, 18, 70, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 229, 255, 0.28);
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.cosmic-dock-btn {
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.cosmic-dock-btn.active {
+  color: #FFFFFF;
+  background: linear-gradient(135deg, var(--electric-blue), var(--neon-purple));
+}
+
+.cosmic-dock-btn:hover:not(.active) {
+  color: var(--cyan);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Official college identity on sign-in and public pages. */
+.login-college-brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:18px;color:inherit;text-decoration:none;text-align:left}
+.login-college-brand img{width:58px;height:52px;object-fit:contain;border-radius:8px;background:#fff}
+.login-college-brand span,.login-college-brand small{display:block}
+.login-college-brand small{margin-top:3px;opacity:.72}
+.tiny a{color:inherit}
+/* Role-specific dashboards and managed student forms */
+.role-stats{margin-top:-4px}.role-list{display:grid;gap:10px}.role-list>div{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid var(--line);padding:10px 0;font-size:12px}.role-list>div:last-child{border-bottom:0}.role-list span,.role-summary{color:var(--muted);font-size:11px}.role-summary strong{font:800 24px Manrope;color:var(--text);margin-right:5px}.student-search{display:flex;align-items:end;gap:10px;margin-bottom:16px}.student-search label{display:grid;gap:7px;flex:1;font-size:11px;color:var(--muted)}.field{width:100%;border:1px solid var(--line);border-radius:11px;padding:11px 12px;background:#ffffff0b;color:var(--text);font:inherit}.field option{background:#121832;color:var(--text)}.action-btn{display:inline-flex;justify-content:center;align-items:center;border:1px solid #8e87ff66;border-radius:11px;padding:11px 16px;background:linear-gradient(100deg,#6254dd,#3989d8);color:white;font-weight:700;cursor:pointer}.managed-student-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:18px}.form-field{display:grid;align-content:start;gap:7px;font-size:11px;color:#c5cdee}.form-field small{color:var(--muted);line-height:1.5}.form-field textarea{resize:vertical}.form-actions{display:flex;align-items:center;gap:16px;grid-column:1/-1;margin-top:5px}.form-errors{color:#ff9eae;font-size:11px}.credential-panel{border-color:#55e0c077}.credential-panel h3{margin:8px 0 14px}.credential-panel code{padding:5px 8px;border-radius:6px;background:#0005;color:#a8f3d9}.credential-panel p{font-size:12px;color:#c5cdee}@media(max-width:900px){.role-stats{grid-template-columns:repeat(2,1fr)}.managed-student-form{grid-template-columns:1fr}}@media(max-width:650px){.student-search{align-items:stretch;flex-direction:column}.role-list>div{align-items:flex-start;flex-direction:column;gap:5px}}

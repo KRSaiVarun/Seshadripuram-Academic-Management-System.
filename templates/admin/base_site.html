@@ -1,0 +1,41 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Seshadripuram College{% endblock %}
+
+{% block bodyclass %}college-admin-page{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+{% endblock %}
+
+{% block branding %}
+  <div id="site-name">
+    <a class="college-admin-brand" href="/">
+      <img class="college-admin-logo" src="https://www.spmcollege.ac.in/mcom/images/index.webp" alt="">
+      <span><b>Seshadripuram</b><small>COLLEGE · BENGALURU</small></span>
+    </a>
+  </div>
+{% endblock %}
+
+{% block nav-global %}
+  <nav class="college-admin-nav" aria-label="Academic workspace">
+    <a href="/">Overview</a>
+    <a href="{% url 'faculty-directory' %}">Faculty directory</a>
+    {% if user.is_superuser or user.role == "HOD" or user.role == "ADMIN" or user.role == "PRINCIPAL" %}
+      <a href="{% url 'admin:academics_student_changelist' %}">Students</a>
+      <a href="{% url 'admin:academics_faculty_changelist' %}">Faculty</a>
+      <a href="{% url 'admin:academics_department_changelist' %}">Departments</a>
+      <a href="{% url 'admin:academics_program_changelist' %}">Programs</a>
+      <a href="{% url 'admin:academics_semester_changelist' %}">Semesters</a>
+      <a href="{% url 'admin:academics_academicyear_changelist' %}">Academic years</a>
+      <a href="{% url 'admin:academics_facultydirectoryprofile_changelist' %}">Directory profiles</a>
+    {% elif user.role == "FACULTY" %}
+      <a href="{% url 'admin:academics_student_changelist' %}">My Students</a>
+    {% endif %}
+    {% if user.is_superuser or user.role == "HOD" or user.role == "ADMIN" or user.role == "PRINCIPAL" or user.role == "FACULTY" %}
+      <a href="{% url 'admin:academics_subject_changelist' %}">Subjects</a>
+    {% endif %}
+  </nav>
+{% endblock %}

@@ -1,0 +1,164 @@
+.subject-panel {
+  margin: 18px 0;
+}
+
+.subject-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.subject-filter {
+  min-width: 220px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  outline: none;
+  background: rgba(8, 11, 28, .72);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+
+.subject-filter:focus {
+  border-color: var(--violet);
+}
+
+.subject-filter option {
+  background: #10152b;
+  color: var(--text);
+}
+
+.subject-table td {
+  vertical-align: middle;
+}
+
+.subject-type {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.sr-only {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.subject-edit-page {
+  min-height: 100vh;
+  padding: 28px 20px;
+}
+
+.subject-edit-shell {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: 28px;
+  border-radius: 22px;
+}
+
+.subject-edit-shell h1 {
+  margin: 8px 0;
+  font: 800 28px Manrope, sans-serif;
+}
+
+.subject-edit-shell > p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.subject-edit-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.subject-edit-form label {
+  display: grid;
+  gap: 7px;
+  color: #c8d0eb;
+  font-size: 12px;
+}
+
+.subject-edit-form .field {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  outline: none;
+  background: rgba(8, 11, 28, .72);
+  color: var(--text);
+  font: inherit;
+}
+
+.subject-edit-form .field:focus {
+  border-color: var(--violet);
+}
+
+.subject-edit-form .field option {
+  background: #10152b;
+}
+
+.subject-edit-form .form-errors,
+.subject-edit-form ul.errorlist {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #ff9aab;
+  font-size: 12px;
+}
+
+.subject-edit-actions {
+  display: flex;
+  grid-column: 1 / -1;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.subject-save-btn,
+.subject-cancel-btn {
+  padding: 11px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.subject-save-btn {
+  background: linear-gradient(110deg, #5b50dc, #2e8bff);
+}
+
+.subject-cancel-btn {
+  background: #ffffff09;
+}
+
+@media (max-width: 640px) {
+  .subject-controls {
+    display: grid;
+  }
+
+  .subject-filter {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .subject-edit-page {
+    padding: 16px 12px;
+  }
+
+  .subject-edit-shell {
+    padding: 20px 16px;
+  }
+
+  .subject-edit-form {
+    grid-template-columns: 1fr;
+  }
+}

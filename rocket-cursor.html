@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seshadripuram College – Rocket Cursor</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--cy:#00E5FF;--mu:#9AA8C0;--glass:rgba(12,18,70,.62);--bd:rgba(255,255,255,.16)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{min-height:100vh;color:#E2E8F0;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden;background:radial-gradient(circle at 18% 22%,rgba(121,0,255,.2),transparent 50%),radial-gradient(circle at 82% 78%,rgba(8,123,255,.17),transparent 55%),#080816;background-attachment:fixed}
+/* Native cursor is hidden only over empty areas; interactive elements keep theirs */
+body.fx-on{cursor:none}
+body.fx-on a,body.fx-on button,body.fx-on [role=button]{cursor:pointer}
+body.fx-on input,body.fx-on textarea{cursor:text}
+button{font:inherit;color:inherit;border:0;background:none}
+:focus-visible{outline:2px solid var(--cy);outline-offset:3px}
+/* Background stars sit BEHIND content; rocket/fireworks sit ABOVE it. Both ignore the pointer. */
+canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+#bg{z-index:0}#fx{z-index:50}
+#page{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:2rem 1.2rem 7rem}
+.hero,.card,.panel{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--bd);border-radius:20px}
+.hero{padding:2.2rem 2.6rem;margin-bottom:1.4rem;box-shadow:0 20px 50px rgba(0,0,0,.5),0 0 35px rgba(121,0,255,.15)}
+.hero h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:.5rem 0}
+.hero p{color:var(--mu);max-width:62ch}
+.hint{margin-top:1.1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);font-size:.86rem;color:var(--mu)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.1rem;margin-bottom:1.4rem}
+.card{padding:1.2rem 1.4rem;transition:transform .25s,border-color .25s,box-shadow .25s}
+.card:hover{transform:translateY(-3px);border-color:rgba(0,229,255,.4);box-shadow:0 14px 34px rgba(0,0,0,.4),0 0 22px rgba(0,229,255,.12)}
+.card small{display:block;color:var(--mu);font-size:.84rem}
+.card b{display:block;font-size:2rem;line-height:1.2;font-variant-numeric:tabular-nums}
+.card i{font-style:normal;font-size:.8rem;color:#00D084}
+.panel{padding:1.6rem 2rem}
+.panel h2{font-size:1.2rem;margin-bottom:.3rem}
+.panel>p{color:var(--mu);font-size:.92rem;margin-bottom:1.2rem}
+.row{display:flex;flex-wrap:wrap;gap:.8rem;margin-bottom:1.1rem}
+.btn{padding:.7rem 1.4rem;border-radius:12px;font-weight:600;border:1px solid rgba(255,255,255,.22);background:linear-gradient(135deg,#087BFF,#7900FF);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,229,255,.4)}
+.btn:active{transform:scale(.97)}
+.btn.c{background:linear-gradient(135deg,#00A6C8,#00E5FF);color:#04121F}
+.btn.p{background:linear-gradient(135deg,#D500F9,#FF2DAA)}
+.btn.g{background:rgba(255,255,255,.09)}
+input{flex:1;min-width:220px;padding:.7rem 1.1rem;border-radius:12px;border:1px solid var(--bd);background:rgba(8,12,45,.75);color:#fff;font:inherit}
+input:focus{border-color:var(--cy);box-shadow:0 0 14px rgba(0,229,255,.35);outline:none}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:.9rem;margin-top:.4rem}
+.tips div{padding:.9rem 1.1rem;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:.84rem;color:var(--mu)}
+.tips h3{font-size:.92rem;color:var(--cy);margin-bottom:.25rem}
+.dock{position:fixed;left:50%;bottom:calc(1rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:40;display:flex;flex-wrap:wrap;justify-content:center;gap:.3rem;padding:.45rem .6rem;max-width:calc(100% - 1.5rem);background:rgba(12,18,70,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(0,229,255,.3);border-radius:999px}
+.dock button{padding:.4rem .85rem;border-radius:999px;font-size:.8rem;font-weight:600;color:var(--mu);white-space:nowrap}
+.dock button.on{color:#fff;background:linear-gradient(135deg,#087BFF,#7900FF)}
+.dock button:disabled{opacity:.45}
+#toast{position:fixed;left:50%;top:calc(1rem + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);z-index:60;padding:.55rem 1.1rem;border-radius:999px;background:rgba(12,18,70,.95);border:1px solid var(--cy);font-size:.85rem;transition:transform .3s;max-width:92vw;text-align:center}
+#toast.show{transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body class="fx-on">
+<canvas id="bg" aria-hidden="true"></canvas>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div id="toast" role="status" aria-live="polite" data-nofx></div>
+
+<main id="page">
+  <section class="hero">
+    <p style="color:var(--cy);font-weight:600">Seshadripuram College, Bengaluru</p>
+    <h1>Smart Academic Management System</h1>
+    <p>A live preview of the interactive effects layer: a rocket cursor with a smoke trail, click fireworks and a starfield. Everything below stays fully clickable and selectable.</p>
+    <p class="hint">Move the mouse to fly the rocket. Click for fireworks. Hold, then release, for a bigger burst.</p>
+  </section>
+
+  <section class="kpis" aria-label="Sample statistics">
+    <div class="card"><small>Students (sample)</small><b data-count="4820">4,820</b><i>Demo data</i></div>
+    <div class="card"><small>Faculty (sample)</small><b data-count="248">248</b><i>Demo data</i></div>
+    <div class="card"><small>Courses (sample)</small><b data-count="36">36</b><i>Demo data</i></div>
+    <div class="card"><small>Attendance (sample)</small><b data-count="94.8" data-dec="1" data-suf="%">94.8%</b><i>Demo data</i></div>
+  </section>
+
+  <section class="panel">
+    <h2>Interaction test</h2>
+    <p>The rocket hides over buttons and inputs so the normal cursor returns there. Each burst button also works from the keyboard.</p>
+    <div class="row">
+      <button class="btn" data-burst="0" data-power="1.35">Sapphire burst</button>
+      <button class="btn c" data-burst="2" data-power="1.35">Emerald burst</button>
+      <button class="btn p" data-burst="3" data-power="1.6">Cyber burst</button>
+      <button class="btn g" data-burst="1" data-power="1.8" data-boost="1">Hyperdrive</button>
+    </div>
+    <div class="row">
+      <input id="test-input" type="text" placeholder="Type here to test text input and selection" aria-label="Test input">
+      <button class="btn g" id="verify">Check input</button>
+    </div>
+    <div class="tips">
+      <div><h3>Inertial flight</h3>Eased follow, shortest-path rotation and banking on turns.</div>
+      <div><h3>Connected smoke</h3>Puffs spawn at the nozzle and fill the gaps between frames.</div>
+      <div><h3>Layered fireworks</h3>Gravity, drag, streaks, rings and secondary bursts.</div>
+    </div>
+  </section>
+</main>
+
+<div class="dock" data-nofx role="group" aria-label="Effect settings">
+  <button data-flag="smoke" data-label="Smoke"></button>
+  <button data-flag="shake" data-label="Shake"></button>
+  <button data-flag="stars" data-label="Stars"></button>
+  <button data-flag="rocket" data-label="Rocket"></button>
+</div>
+
+<script>
+'use strict';
+/* ===== 1. CONFIG (all tunables live here) ===== */
+const CONFIG={
+  ROCKET_SMOOTHING:9,      // follow rate per second (higher = tighter, less lag)
+  ROTATION_SMOOTHING:10,   // turn rate per second
+  ROCKET_SPEED:900,        // px/s that gives full engine thrust
+  BANKING:.3,              // how much the rocket squashes/tilts in turns
+  IDLE_MS:600,             // time before the rocket re-points upward
+  SMOKE_RATE:80,           // puffs per second at full thrust
+  SMOKE_LIFETIME:1.1,      // seconds
+  SMOKE_GROWTH:26,         // max puff radius growth in px
+  FIREWORK_PARTICLES:75,
+  FIREWORK_GRAVITY:170,    // px/s²
+  PARTICLE_FRICTION:.965,  // velocity kept per 1/60 s
+  PARTICLE_DECAY:.9,       // base spark lifetime in seconds
+  MAX_PARTICLES:1200,      // hard cap for sparks
+  MAX_SMOKE:400,           // hard cap for smoke puffs
+  ENGINE_GLOW:1,           // 0 to 2, strength of the nozzle glow
+  STAR_COUNT:170
+};
+const PALETTES=[
+  {c:['#00E5FF','#087BFF','#7900FF','#FFFFFF','#D500F9']},
+  {c:['#FFD700','#FF8A00','#FF2DAA','#FFFFFF','#FF1744']},
+  {c:['#00F5D4','#00D084','#00B4D8','#FFFFFF','#76FF03']},
+  {c:['#D500F9','#7900FF','#00E5FF','#FFD700','#FF007F']}
+];
+const FLAGS={smoke:true,shake:true,stars:true,rocket:true};
+const NOZZLE=24;           // nozzle distance from rocket centre (local +y)
+
+/* ===== 2. CANVAS SETUP ===== */
+const $=id=>document.getElementById(id);
+const bg=$('bg'),fx=$('fx'),bctx=bg.getContext('2d'),ctx=fx.getContext('2d');
+let W=0,H=0;
+function resize(){
+  W=innerWidth;H=innerHeight;const dpr=Math.min(devicePixelRatio||1,2);
+  for(const c of [bg,fx]){c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);}
+  bctx.setTransform(dpr,0,0,dpr,0,0);ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+addEventListener('resize',resize);resize();
+
+/* ===== 3. ACCESSIBILITY / PERFORMANCE STATE ===== */
+const mq=matchMedia('(prefers-reduced-motion: reduce)');
+const coarse=matchMedia('(pointer: coarse)').matches;
+let reduced=mq.matches,quality=1;
+if(reduced)FLAGS.smoke=false;
+mq.addEventListener('change',()=>{reduced=mq.matches;if(reduced)FLAGS.smoke=false;syncDock();});
+const toast=$('toast');let toastTimer;
+function say(m){toast.textContent=m;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2800);}
+
+/* ===== 4. SPRITES (pre-rendered once, drawn cheaply each frame) ===== */
+function sprite(size,stops){
+  const c=document.createElement('canvas');c.width=c.height=size;
+  const g=c.getContext('2d'),h=size/2,gr=g.createRadialGradient(h,h,0,h,h,h);
+  stops.forEach(s=>gr.addColorStop(s[0],s[1]));g.fillStyle=gr;g.fillRect(0,0,size,size);return c;
+}
+const smokeSprite=sprite(64,[[0,'rgba(235,242,255,.9)'],[.45,'rgba(185,200,240,.4)'],[1,'rgba(150,160,220,0)']]);
+const engineSprite=sprite(64,[[0,'rgba(0,229,255,.9)'],[.4,'rgba(121,0,255,.4)'],[1,'rgba(0,0,0,0)']]);
+
+/* ===== 5. OBJECT POOLS (preallocated, swap-remove, no per-frame allocation) ===== */
+const pool=(n,mk)=>({a:Array.from({length:n},mk),n:0});
+const take=p=>p.n<p.a.length?p.a[p.n++]:null;
+function drop(p,i){const a=p.a,l=--p.n,t=a[i];a[i]=a[l];a[l]=t;}
+const smoke=pool(CONFIG.MAX_SMOKE,()=>({x:0,y:0,vx:0,vy:0,r:0,R:0,life:0,max:1,a:0}));
+const sparks=pool(CONFIG.MAX_PARTICLES+80,()=>({x:0,y:0,vx:0,vy:0,s:1,c:'#fff',life:0,max:1,tw:false,ts:0,sec:false}));
+const flashes=pool(16,()=>({x:0,y:0,r:0,life:0,max:1,c:'#fff'}));
+const rings=pool(16,()=>({x:0,y:0,R:0,life:0,max:1,c:'#fff'}));
+
+/* ===== 6. STARFIELD (normalised coords: resize-safe, drawn on the background canvas) ===== */
+const stars=Array.from({length:CONFIG.STAR_COUNT},()=>({x:Math.random(),y:Math.random(),r:Math.random()*1.3+.4,a:Math.random()*.5+.25,sp:Math.random()*2+1,ph:Math.random()*6.28,d:Math.random()*.04+.01,c:Math.random()<.15?'#00E5FF':Math.random()<.1?'#D500F9':'#FFFFFF'}));
+function drawStars(ts){
+  const ox=rocket.x-W/2,oy=rocket.y-H/2; // slight parallax follows the rocket
+  for(const s of stars){
+    const tw=reduced?0:Math.sin(ts*s.sp+s.ph)*.25;
+    bctx.globalAlpha=Math.max(.08,Math.min(1,s.a+tw));
+    bctx.fillStyle=s.c;
+    bctx.fillRect(s.x*W-ox*s.d,s.y*H-oy*s.d,s.r*1.6,s.r*1.6);
+  }
+  bctx.globalAlpha=1;
+}
+
+/* ===== 7. ROCKET STATE + PHYSICS ===== */
+const rocket={x:0,y:0,tx:0,ty:0,vx:0,vy:0,speed:0,angle:0,tAngle:0,bank:0,thrust:0,alpha:0,
+  active:false,overUI:false,touch:false,touchUntil:0,lastMove:0,nx:null,ny:null,down:false,downT:0,hx:0,hy:0};
+const expK=(rate,dt)=>1-Math.exp(-rate*dt); // frame-rate independent smoothing factor
+function updateRocket(dt,t){
+  const r=rocket,k=expK(reduced?20:CONFIG.ROCKET_SMOOTHING,dt);
+  const dx=r.tx-r.x,dy=r.ty-r.y;
+  r.x+=dx*k;r.y+=dy*k;
+  r.vx=dx*k/dt;r.vy=dy*k/dt;r.speed=Math.hypot(r.vx,r.vy);
+  r.thrust+=(Math.min(1,r.speed/CONFIG.ROCKET_SPEED)-r.thrust)*expK(8,dt);
+  // Point along travel direction; re-point upward after idling
+  if(r.speed>60){r.tAngle=Math.atan2(r.vy,r.vx)+Math.PI/2;r.lastMove=t;}
+  else if(t-r.lastMove>CONFIG.IDLE_MS)r.tAngle=0;
+  let d=r.tAngle-r.angle;d=Math.atan2(Math.sin(d),Math.cos(d)); // shortest path, no ±180° flip
+  const rotK=expK(reduced?20:CONFIG.ROTATION_SMOOTHING,dt);
+  r.angle=Math.atan2(Math.sin(r.angle+d*rotK),Math.cos(r.angle+d*rotK));
+  r.bank+=(Math.max(-1,Math.min(1,d*2))-r.bank)*expK(8,dt);
+  const want=r.active&&FLAGS.rocket&&!r.overUI&&(!r.touch||t<r.touchUntil)?1:0;
+  r.alpha+=(want-r.alpha)*expK(14,dt);
+}
+
+/* ===== 8. SMOKE ===== */
+let smokeAcc=0;
+function spawnSmoke(x,y){
+  const p=take(smoke);if(!p)return;const r=rocket;
+  const back=r.angle+Math.PI+(Math.random()-.5)*.6,sp=(20+Math.random()*30)*(1+r.thrust);
+  p.x=x+(Math.random()-.5)*3;p.y=y+(Math.random()-.5)*3;
+  p.vx=r.vx*.12+Math.sin(back)*sp;p.vy=r.vy*.12-Math.cos(back)*sp;
+  p.r=3+Math.random()*3;p.R=10+Math.random()*10+CONFIG.SMOKE_GROWTH*(.5+r.thrust*.5);
+  p.life=0;p.max=CONFIG.SMOKE_LIFETIME*(.8+Math.random()*.4);p.a=.3+Math.random()*.25;
+}
+function emitSmoke(dt){
+  const r=rocket;
+  // Nozzle in world space: local (0,+NOZZLE) rotated by the rocket angle
+  const nx=r.x-Math.sin(r.angle)*NOZZLE,ny=r.y+Math.cos(r.angle)*NOZZLE;
+  if(FLAGS.smoke&&!reduced&&r.alpha>.2&&r.nx!==null){
+    smokeAcc+=CONFIG.SMOKE_RATE*quality*(.3+r.thrust*1.2)*dt;
+    const n=Math.floor(smokeAcc);smokeAcc-=n;
+    // Spread puffs along the path since last frame so the trail stays continuous
+    for(let i=1;i<=n;i++){const f=i/n;spawnSmoke(r.nx+(nx-r.nx)*f,r.ny+(ny-r.ny)*f);}
+  }
+  r.nx=nx;r.ny=ny;
+}
+function drawSmoke(dt){
+  const damp=Math.exp(-1.2*dt);
+  for(let i=smoke.n-1;i>=0;i--){
+    const p=smoke.a[i];p.life+=dt;
+    if(p.life>=p.max){drop(smoke,i);continue;}
+    p.vx*=damp;p.vy=p.vy*damp-8*dt; // gentle drift upward like vapour
+    p.x+=p.vx*dt;p.y+=p.vy*dt;
+    const u=p.life/p.max,rad=p.r+(p.R-p.r)*Math.sqrt(u);
+    ctx.globalAlpha=p.a*(1-u)*(1-u);
+    ctx.drawImage(smokeSprite,p.x-rad,p.y-rad,rad*2,rad*2);
+  }
+  ctx.globalAlpha=1;
+}
+
+/* ===== 9. FIREWORKS ===== */
+let shakeI=0;
+function firework(x,y,power,pal){
+  pal=pal||PALETTES[Math.random()*PALETTES.length|0];power=power||1;
+  const col=pal.c,n=Math.round((reduced?22:CONFIG.FIREWORK_PARTICLES)*power*quality);
+  let f=take(flashes);
+  if(f){f.x=x;f.y=y;f.r=(reduced?26:46)*Math.sqrt(power);f.life=0;f.max=reduced?.12:.2;f.c=col[0];}
+  if(!reduced){const g=take(rings);if(g){g.x=x;g.y=y;g.R=75*power;g.life=0;g.max=.45;g.c=col[1];}}
+  for(let i=0;i<n;i++){
+    const s=take(sparks);if(!s)break;
+    const a=Math.random()*6.2832,sp=(40+Math.random()*250)*Math.sqrt(Math.random())*Math.sqrt(power)*(reduced?.6:1);
+    s.x=x;s.y=y;s.vx=Math.cos(a)*sp;s.vy=Math.sin(a)*sp;s.s=1+Math.random()*2.2;
+    s.c=col[Math.random()*col.length|0];s.life=0;s.max=CONFIG.PARTICLE_DECAY*(.7+Math.random()*.6)*(reduced?.5:1);
+    s.tw=Math.random()<.35;s.ts=10+Math.random()*25;s.sec=!reduced&&Math.random()<.18;
+  }
+  if(power>=1.5&&FLAGS.shake&&!reduced)shakeI=Math.max(shakeI,Math.min(10,power*3.5));
+}
+function drawFx(dt,ts){
+  ctx.globalCompositeOperation='lighter';
+  for(let i=flashes.n-1;i>=0;i--){
+    const f=flashes.a[i];f.life+=dt;if(f.life>=f.max){drop(flashes,i);continue;}
+    const u=f.life/f.max,g=ctx.createRadialGradient(f.x,f.y,0,f.x,f.y,f.r);
+    g.addColorStop(0,'#FFF');g.addColorStop(.35,f.c);g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.globalAlpha=.85*(1-u);ctx.fillStyle=g;ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,6.2832);ctx.fill();
+  }
+  for(let i=rings.n-1;i>=0;i--){
+    const s=rings.a[i];s.life+=dt;if(s.life>=s.max){drop(rings,i);continue;}
+    const u=s.life/s.max;
+    ctx.globalAlpha=.6*(1-u);ctx.strokeStyle=s.c;ctx.lineWidth=Math.max(.5,3*(1-u));
+    ctx.beginPath();ctx.arc(s.x,s.y,5+(s.R-5)*Math.pow(u,.4),0,6.2832);ctx.stroke();
+  }
+  const fr=Math.pow(CONFIG.PARTICLE_FRICTION,dt*60);
+  ctx.lineCap='round';
+  for(let i=sparks.n-1;i>=0;i--){
+    const p=sparks.a[i];p.life+=dt;
+    if(p.life>=p.max){
+      if(p.sec){ // delayed secondary burst where the spark dies
+        for(let k=0;k<6;k++){
+          const m=take(sparks);if(!m)break;const a=Math.random()*6.2832,sp=15+Math.random()*45;
+          m.x=p.x;m.y=p.y;m.vx=Math.cos(a)*sp;m.vy=Math.sin(a)*sp;m.s=p.s*.65;m.c=p.c;
+          m.life=0;m.max=.35;m.tw=true;m.ts=30;m.sec=false;
+        }
+      }
+      drop(sparks,i);continue;
+    }
+    p.vx*=fr;p.vy=p.vy*fr+CONFIG.FIREWORK_GRAVITY*dt;
+    p.x+=p.vx*dt;p.y+=p.vy*dt;
+    let a=1-p.life/p.max;if(p.tw)a*=.4+.6*Math.sin(ts*p.ts+i);
+    ctx.globalAlpha=Math.max(0,a);
+    ctx.strokeStyle=p.c;ctx.lineWidth=p.s;
+    ctx.beginPath();ctx.moveTo(p.x-p.vx*.035,p.y-p.vy*.035);ctx.lineTo(p.x,p.y);ctx.stroke(); // velocity streak = light trail
+    ctx.fillStyle='#FFF';ctx.beginPath();ctx.arc(p.x,p.y,p.s*.6,0,6.2832);ctx.fill();
+  }
+  ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
+}
+function drawCharge(t){ // ring that grows while the button is held
+  const r=rocket;if(!r.down||reduced)return;
+  const c=Math.min(1,(t-r.downT)/1500);if(t-r.downT<350)return;
+  ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.35+.4*c;ctx.strokeStyle='#00E5FF';ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(r.hx,r.hy,12+44*c,0,6.2832);ctx.stroke();
+  ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
+}
+
+/* ===== 10. ROCKET RENDERING (gradients built once, reused) ===== */
+const hullG=ctx.createLinearGradient(-11,0,11,0);
+[[0,'#CBD5E1'],[.25,'#FFFFFF'],[.7,'#E2E8F0'],[1,'#94A3B8']].forEach(s=>hullG.addColorStop(s[0],s[1]));
+const wingL=ctx.createLinearGradient(-22,0,-6,0);wingL.addColorStop(0,'#00E5FF');wingL.addColorStop(1,'#101B63');
+const wingR=ctx.createLinearGradient(6,0,22,0);wingR.addColorStop(0,'#101B63');wingR.addColorStop(1,'#D500F9');
+const canopyG=ctx.createLinearGradient(0,-13,0,2);
+[[0,'#00E5FF'],[.45,'#087BFF'],[1,'#080816']].forEach(s=>canopyG.addColorStop(s[0],s[1]));
+function flame(len,w,c){
+  ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(-w,22);
+  ctx.quadraticCurveTo(-w*.4,22+len*.6,0,22+len);ctx.quadraticCurveTo(w*.4,22+len*.6,w,22);ctx.fill();
+}
+function drawRocket(ts){
+  const r=rocket;if(r.alpha<.02)return;
+  const fl=(14+r.thrust*32)*(.86+.14*Math.sin(ts*48)+.05*Math.sin(ts*91)),g=CONFIG.ENGINE_GLOW;
+  ctx.save();ctx.translate(r.x,r.y);ctx.rotate(r.angle+r.bank*.15);ctx.scale(1-Math.abs(r.bank)*CONFIG.BANKING,1);
+  // Engine: glow + layered flame, additive
+  ctx.globalCompositeOperation='lighter';
+  const gs=(28+fl)*g;ctx.globalAlpha=r.alpha*Math.min(1,.5*g+r.thrust*.4);
+  ctx.drawImage(engineSprite,-gs,22+fl*.4-gs,gs*2,gs*2);
+  ctx.globalAlpha=r.alpha;
+  flame(fl*1.25,6.5,'#FF8A00');flame(fl,6,'#087BFF');flame(fl*.7,3.6,'#00E5FF');flame(fl*.4,1.8,'#FFFFFF');
+  ctx.globalCompositeOperation='source-over';
+  // Fins
+  ctx.lineWidth=1;
+  ctx.fillStyle=wingL;ctx.strokeStyle='rgba(0,229,255,.7)';
+  ctx.beginPath();ctx.moveTo(-7,-2);ctx.lineTo(-22,24);ctx.lineTo(-6,18);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.fillStyle=wingR;ctx.strokeStyle='rgba(213,0,249,.7)';
+  ctx.beginPath();ctx.moveTo(7,-2);ctx.lineTo(22,24);ctx.lineTo(6,18);ctx.closePath();ctx.fill();ctx.stroke();
+  // Hull
+  ctx.fillStyle=hullG;ctx.strokeStyle='#FFF';ctx.lineWidth=1.2;
+  ctx.beginPath();ctx.moveTo(0,-24);ctx.bezierCurveTo(12.6,-9.2,10.5,16,5,22);ctx.lineTo(-5,22);ctx.bezierCurveTo(-10.5,16,-12.6,-9.2,0,-24);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.fillStyle='#00E5FF';ctx.beginPath();ctx.moveTo(0,-24);ctx.lineTo(4.2,-16);ctx.lineTo(-4.2,-16);ctx.closePath();ctx.fill();
+  // Cockpit glass + highlight
+  ctx.fillStyle=canopyG;ctx.strokeStyle='rgba(255,255,255,.85)';
+  ctx.beginPath();ctx.ellipse(0,-5.5,4.2,7.4,0,0,6.2832);ctx.fill();ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.75)';ctx.beginPath();ctx.ellipse(-1.4,-8,1.6,3,-.2,0,6.2832);ctx.fill();
+  // Nozzle
+  ctx.fillStyle='#1E293B';ctx.strokeStyle='#64748B';
+  ctx.beginPath();ctx.moveTo(-4,18);ctx.lineTo(-5.5,NOZZLE);ctx.lineTo(5.5,NOZZLE);ctx.lineTo(4,18);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.restore();
+}
+
+/* ===== 11. MAIN LOOP (single rAF, delta-time, adaptive quality) ===== */
+const page=$('page');
+let last=performance.now(),ema=16,slow=0;
+function frame(t){
+  requestAnimationFrame(frame);
+  const raw=(t-last)/1000,dt=Math.min(Math.max(raw,.001),.05);last=t;const ts=t/1000;
+  // Performance guard: sustained slow frames drop to half particles and stop shake
+  ema+=(Math.min(raw*1000,100)-ema)*.05;
+  if(ema>24&&quality===1){if(++slow>120){quality=.5;FLAGS.shake=false;syncDock();say('Slow frames detected: effects reduced');}}else slow=0;
+
+  updateRocket(dt,t);emitSmoke(dt);
+  bctx.clearRect(0,0,W,H);if(FLAGS.stars)drawStars(ts);
+  ctx.clearRect(0,0,W,H);
+  drawSmoke(dt);drawFx(dt,ts);drawCharge(t);drawRocket(ts);
+
+  if(shakeI>.05){page.style.transform=`translate3d(${((Math.random()-.5)*shakeI*1.5).toFixed(1)}px,${((Math.random()-.5)*shakeI*1.5).toFixed(1)}px,0)`;shakeI*=Math.pow(.92,dt*60);}
+  else if(shakeI){shakeI=0;page.style.transform='';}
+}
+document.addEventListener('visibilitychange',()=>{last=performance.now();});
+
+/* ===== 12. INPUT (pointer events cover mouse, pen and touch; no duplicate emulated clicks) ===== */
+const UI='a,button,input,textarea,select,label,summary,[contenteditable],[role=button],[data-native]';
+function track(e){
+  const r=rocket;r.tx=e.clientX;r.ty=e.clientY;
+  if(!r.active){r.x=r.tx;r.y=r.ty;r.nx=null;r.active=true;} // snap on entry: no wrong-position flash
+  r.overUI=!!(e.target.closest&&e.target.closest(UI));
+  r.touch=e.pointerType==='touch';
+  if(r.touch)r.touchUntil=performance.now()+1200; // brief rocket on touch
+}
+function burstFrom(b){
+  const q=b.getBoundingClientRect();
+  firework(q.left+q.width/2,q.top+q.height/2,+b.dataset.power||1.4,PALETTES[+b.dataset.burst]);
+  if(b.dataset.boost)rocket.thrust=1;
+}
+addEventListener('pointermove',track,{passive:true});
+addEventListener('pointerdown',e=>{
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  track(e);const t=e.target,b=t.closest&&t.closest('[data-burst]');
+  if(b){burstFrom(b);return;}
+  if(t.closest&&t.closest('input,textarea,select,[data-nofx]'))return; // no fireworks while typing or using the dock
+  rocket.down=true;rocket.downT=performance.now();rocket.hx=e.clientX;rocket.hy=e.clientY;
+  firework(e.clientX,e.clientY,1);
+},{passive:true});
+function release(e){
+  const r=rocket;if(!r.down)return;r.down=false;
+  const held=performance.now()-r.downT;
+  if(e.type==='pointerup'&&held>350)firework(e.clientX,e.clientY,1+Math.min(1,held/1500)*1.5);
+}
+addEventListener('pointerup',release,{passive:true});
+addEventListener('pointercancel',release,{passive:true});
+document.addEventListener('pointerout',e=>{if(!e.relatedTarget)rocket.active=false;}); // pointer left the window
+document.addEventListener('click',e=>{ // keyboard activation (Enter/Space) has detail 0
+  const b=e.target.closest&&e.target.closest('[data-burst]');if(b&&e.detail===0)burstFrom(b);
+});
+
+/* ===== 13. UI ===== */
+const dock=document.querySelector('.dock');
+function syncDock(){
+  dock.querySelectorAll('button').forEach(b=>{
+    const k=b.dataset.flag,on=FLAGS[k];
+    b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);
+    b.textContent=`${b.dataset.label}: ${on?'On':'Off'}`;
+    b.disabled=(k==='smoke'&&reduced);
+  });
+  document.body.classList.toggle('fx-on',FLAGS.rocket&&!coarse); // native cursor returns when rocket is off
+}
+dock.addEventListener('click',e=>{const b=e.target.closest('button[data-flag]');if(!b)return;FLAGS[b.dataset.flag]=!FLAGS[b.dataset.flag];syncDock();});
+$('verify').addEventListener('click',()=>{const v=$('test-input').value.trim();say(v?`Input received: ${v}`:'Type something in the field first');});
+const fmt=(n,d)=>n.toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});
+document.querySelectorAll('[data-count]').forEach(el=>{
+  const end=+el.dataset.count,d=+el.dataset.dec||0,suf=el.dataset.suf||'';
+  if(reduced)return;
+  const t0=performance.now();
+  (function step(n){const u=Math.min(1,(n-t0)/1200);el.textContent=fmt(end*(1-Math.pow(1-u,3)),d)+suf;if(u<1)requestAnimationFrame(step);})(t0);
+});
+syncDock();
+if(reduced)say('Reduced motion is on: smoke and large explosions are off');
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
